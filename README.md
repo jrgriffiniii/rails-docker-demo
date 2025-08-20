@@ -38,14 +38,16 @@ minikube image ls
 ### Deploying the Application in k8s
 
 ```bash
-kubectl create -f k8s/rails-deployment.yaml
+kubectl create -f k8s/postgres-deployment.yaml
+kubectl expose -f k8s/db-service.yaml
+kubectl create -f k8s/web-deployment.yaml
+kubectl expose -f k8s/web-service.yaml
 kubectl get pods
-kubectl expose -f k8s/rails-service.yaml
 kubectl get services
 ```
 
 ### Accessing the Application
 
 ```bash
-minikube service rails-docker-demo --url
+minikube service web --url
 ```

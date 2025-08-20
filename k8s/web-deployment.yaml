@@ -3,39 +3,27 @@ kind: Deployment
 metadata:
   creationTimestamp: null
   labels:
-    app: rails-docker-demo
-  name: rails-docker-demo
+    app: web
+  name: web
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: rails-docker-demo
+      app: web
   strategy: {}
   template:
     metadata:
       creationTimestamp: null
       labels:
-        app: rails-docker-demo
+        app: web
     spec:
       containers:
-        - image: postgres:17.6-alpine
-          name: rails-docker-demo-db
-          env:
-            - name: POSTGRES_USER
-              value: postgres
-            - name: POSTGRES_PASSWORD
-              value: password
-            - name: POSTGRES_DB
-              value: hello_world_development
-          ports:
-            - containerPort: 5432
-          resources: {}
-          imagePullPolicy: IfNotPresent
         - image: rails-docker-demo-web:latest
-          name: rails-docker-demo-web
+          imagePullPolicy: Never
+          name: web
           env:
             - name: DATABASE_HOST
-              value: rails-docker-demo-db
+              value: db
             - name: DATABASE_USER
               value: postgres
             - name: DATABASE_PASSWORD
@@ -46,6 +34,7 @@ spec:
               value: development
           ports:
             - containerPort: 3000
+          command:
+            ["bundle", "exec", "rails", "s", "-p", "3000", "-b", "0.0.0.0"]
           resources: {}
-          imagePullPolicy: Never
 status: {}
