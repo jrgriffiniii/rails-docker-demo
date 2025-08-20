@@ -1,0 +1,35 @@
+---
+services:
+  # The PostgreSQL Database Service
+  db:
+    image: postgres:17.6-alpine # Use a specific, lightweight PostgreSQL image
+    volumes:
+      - postgres_data:/var/lib/postgresql/data # Persist database data
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: hello_world_development
+    ports:
+      # Optionally expose the database port to your host machine for debugging
+      - "5432:5432"
+
+  # The Rails Application Service
+  web:
+    build: . # Build the image from the Dockerfile in the current directory
+    command: bundle exec rails s -p 3000 -b '0.0.0.0' # Command to start the server
+    volumes:
+      - ./hello_world:/rails # Mount your app code into the container for live changes
+    ports:
+      - "3000:3000" # Map host port 3000 to container port 3000
+    depends_on:
+      - db # Ensure the database container starts before the web container
+    environment:
+      DATABASE_HOST: db
+      DATABASE_USER: postgres
+      DATABASE_PASSWORD: password
+      DATABASE_NAME: hello_world_development
+      RAILS_ENV: development
+
+# Define a named volume for persistent database storage
+volumes:
+  postgres_data:
