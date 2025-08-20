@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: rails-docker-demo
+  name: rails-docker-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rails-docker-demo
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: rails-docker-demo
+    spec:
+      containers:
+        - image: rails-docker-demo-web:latest
+          name: rails-docker-demo-web
+          ports:
+            - containerPort: 3000
+          resources: {}
+          imagePullPolicy: Never
+status: {}

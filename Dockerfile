@@ -9,7 +9,6 @@ FROM ruby:${RUBY_VERSION}
 # Install essential packages
 # - build-essential: For compiling native extensions for gems.
 # - libpq-dev: For the 'pg' gem to connect to PostgreSQL.
-# - nodejs & yarn: For JavaScript asset management (if using webpacker/sprockets).
 # - curl, gnupg, apt-transport-https: For adding repositories.
 RUN apt-get update -qq && \
     apt-get install -y build-essential libpq-dev curl gnupg apt-transport-https
