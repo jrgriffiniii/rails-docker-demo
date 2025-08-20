@@ -18,8 +18,32 @@ spec:
         app: rails-docker-demo
     spec:
       containers:
+        - image: postgres:17.6-alpine
+          name: rails-docker-demo-db
+          env:
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              value: password
+            - name: POSTGRES_DB
+              value: hello_world_development
+          ports:
+            - containerPort: 5432
+          resources: {}
+          imagePullPolicy: IfNotPresent
         - image: rails-docker-demo-web:latest
           name: rails-docker-demo-web
+          env:
+            - name: DATABASE_HOST
+              value: rails-docker-demo-db
+            - name: DATABASE_USER
+              value: postgres
+            - name: DATABASE_PASSWORD
+              value: password
+            - name: DATABASE_NAME
+              value: hello_world_development
+            - name: RAILS_ENV
+              value: development
           ports:
             - containerPort: 3000
           resources: {}
