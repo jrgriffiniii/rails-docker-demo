@@ -1,0 +1,59 @@
+---
+# This file defines a PersistentVolumeClaim and a Deployment for a PostgreSQL database service.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-data-pvc
+spec:
+  # ReadWriteOnce means the volume can be mounted as read-write by a single Node.
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      # Request 1 Gibibyte of storage. You can adjust this as needed.
+      storage: 1Gi
+---
+# Deployment for the PostgreSQL Database Service
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: postgres
+  name: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - image: postgres:17.6-alpine
+          name: postgres
+          ports:
+            - containerPort: 5432
+          env:
+            # The database name is set directly.
+            - name: POSTGRES_DB
+              value: "hello_world_development"
+            # The user and password are pulled from the 'postgres-secret' Secret.
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              value: password
+          volumeMounts:
+            # Mount the persistent volume at the correct path for PostgreSQL data.
+            - name: postgres-storage
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        # This links the volumeMount above to our PersistentVolumeClaim.
+        - name: postgres-storage
+          persistentVolumeClaim:
+            claimName: postgres-data-pvc
+status: {}
